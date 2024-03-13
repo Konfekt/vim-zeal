@@ -10,6 +10,8 @@ augroup DevDocs
 augroup END
 ```
 
+If you prefer to stay in Vim for reading DevDocs, install @girishji 's [devdocs.vim](https://github.com/girishji/devdocs.vim) instead and replace above `:DD` by `:DevdocsFind`.
+
 ---
 
 To look up the current keyword in many configuration files in the terminal as well, have a look at [vim-keyword-lookup](https://github.com/Konfekt/vim-keyword-lookup).
