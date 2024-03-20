@@ -37,13 +37,13 @@ augroup END
 if exists(':Silent') != 2
   " surpress output; use bang for GUI applications
   if has('unix')
-    command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' . (<bang>0 ? 'nohup ' . <q-args> . '</dev/null >/dev/null 2>&1 &' : <q-args>) | execute ':redraw!'
+    command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' .
+          \ (<bang>0 ? 'nohup ' . <q-args> . ' </dev/null >/dev/null 2>&1 &' : <q-args>) | execute ':redraw!'
   elseif has('win32')
-    if &shell =~? '\v(^|\\)cmd\.exe$'
-      command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' . (<bang>0 ? 'start /b ' : '') . <q-args> | execute ':redraw!'
-    else
-      command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !cmd.exe /c ' . (<bang>0 ? 'start /b ' : '') . <q-args> | execute ':redraw!'
-    endif
+    command! -complete=shellcmd -nargs=1 -bang Silent
+          \ execute ':silent !' .
+          \ (&shell =~? '\v(^|\\)cmd\.exe$' ? '' : 'cmd.exe /c ') .
+          \ (<bang>0 ? 'start /b ' : '') . <q-args> | execute ':redraw!'
   endif
 endif
 
