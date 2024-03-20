@@ -52,6 +52,11 @@ function s:mapf1(entry, ...)
   let f1 = maparg('<F1>', 'n', 0, 1)
   if empty(f1) || !f1.buffer
     exe "nnoremap <buffer> <expr> <F1> ':<c-u>Silent! zeal \"" . lang . ":' . (empty(expand('<cword>')) ? '" . substitute(a:entry, "'", "''", 'g') . "' : expand('<cword>')) . '\"<cr>'"
+    if exists('b:undo_ftplugin')
+      let b:undo_ftplugin .= '|silent! unmap <buffer> <F1>'
+    else
+      let b:undo_ftplugin  =  'silent! unmap <buffer> <F1>'
+    endif
   endif
 endfunction
 
