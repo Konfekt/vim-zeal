@@ -51,7 +51,7 @@ function s:mapf1(entry, ...)
   let lang = a:0 > 0 ? a:1 : &filetype
   let f1 = maparg('<F1>', 'n', 0, 1)
   if empty(f1) || !f1.buffer
-    exe "nnoremap <buffer> <expr> <F1> ':<c-u>Silent! zeal \"" . lang . ":' . (empty(expand('<cword>')) ? '" . a:entry . "' : expand('<cword>')) . '\"<cr>'"
+    exe "nnoremap <buffer> <expr> <F1> ':<c-u>Silent! zeal \"" . lang . ":' . (empty(expand('<cword>')) ? '" . substitute(a:entry, "'", "''", 'g') . "' : expand('<cword>')) . '\"<cr>'"
   endif
 endfunction
 
