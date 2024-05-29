@@ -35,15 +35,26 @@ augroup F1Zeal
 augroup END
 
 if exists(':Silent') != 2
-  " surpress output; use bang for GUI applications
   if has('unix')
-    command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' .
-          \ (<bang>0 ? 'nohup ' . <q-args> . ' </dev/null >/dev/null 2>&1 &' : <q-args>) | execute ':redraw!'
+    if has('win32unix') " Git Bash provides /usr/bin/start script calling cmd.exe //c
+      " use start //b "" to set void title and avoid ambiguity with passed argument
+      command! -complete=shellcmd -nargs=1 -bang Silent
+            \ exe 'silent !' . (<bang>0 ? 'start "" //b' : '') . ' ' . <q-args> | execute ':redraw!'
+    elseif exists('$WSL_DISTRO_NAME') " use cmd.exe to start GUI apps in WSL
+      command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' .
+            \ <bang>0 ? ((<q-args> =~? '\v<\f+\.(exe|com|bat|cmd)>') ?
+              \ 'cmd.exe /c start "" /b ' . <q-args> :
+              \ 'nohup ' . <q-args> . ' </dev/null >/dev/null 2>&1 &') :
+            \ <q-args> | execute ':redraw!'
+    else
+      command! -complete=shellcmd -nargs=1 -bang Silent execute ':silent !' .
+            \ (<bang>0 ? 'nohup ' . <q-args> . ' </dev/null >/dev/null 2>&1 &' : <q-args>) | execute ':redraw!'
+    endif
   elseif has('win32')
     command! -complete=shellcmd -nargs=1 -bang Silent
-          \ execute ':silent !' .
-          \ (&shell =~? '\v(^|\\)cmd\.exe$' ? '' : 'cmd.exe /c ') .
-          \ (<bang>0 ? 'start /b ' : '') . <q-args> | execute ':redraw!'
+          \ exe 'silent !' .
+          \ (&shell =~? '\<cmd\.exe\>' ? '' : 'cmd.exe /c ') .
+          \ 'start ' . (<bang>0 ? '/b' : '') . ' ' . <q-args> | execute ':redraw!'
   endif
 endif
 
